@@ -1,12 +1,12 @@
 [versions]
-kotlin = "2.3.21"
-sqlite-jdbc = "3.45.1.0" # Versión actual de sqlite-jdbc
-mockk = "1.13.10" # Versión actual de MockK
+kotlin = "2.2.21"
+sqlite-jdbc = "3.45.1.0"
+mockk = "1.13.10"
 
 [libraries]
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
 sqlite-jdbc = { group = "org.xerial", name = "sqlite-jdbc", version.ref = "sqlite-jdbc" }
-mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" } # Añadimos MockK
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 
 [plugins]
-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+jacoco = { id = "org.gradle.jacoco" }
