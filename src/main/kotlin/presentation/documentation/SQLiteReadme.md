@@ -21,7 +21,7 @@ La implementación se distribuye en las siguientes capas y directorios:
 *   **`src/main/kotlin/data/repository`**:
     *   `UserRepositoryImpl.kt`, `CategoryRepositoryImpl.kt`, `ProductRepositoryImpl.kt`: Implementaciones concretas de las interfaces de repositorio. Contienen la lógica JDBC para interactuar con SQLite, incluyendo transacciones y mapeo de `ResultSet` a objetos de dominio.
 *   **`src/main/kotlin/presentation/documentation`**:
-    *   Este archivo `SQLiteReadme.md`.
+    *   Este archivo `SQLiteReadme.md` y `TestingReadme.md`.
 *   **`src/main/kotlin/presentation/Main.kt`**:
     *   Punto de entrada de la aplicación. Contiene la clase `AppRunner` que orquesta la inicialización de la base de datos, la carga de datos iniciales y la demostración de las operaciones CRUD para `User`, `Category` y `Product` a través de los casos de uso.
 *   **`src/main/resources/initial_data.sql`**:
@@ -42,6 +42,13 @@ La integración con SQLite se realiza a través del driver JDBC:
 *   **Operaciones CRUD para `Product`**: Implementación completa de Crear, Leer (todos y por ID), Actualizar y Eliminar productos, incluyendo su `Category` asociada.
 *   **Carga de Datos Iniciales**: La aplicación verifica si la base de datos está vacía y, si es así, ejecuta las sentencias SQL del archivo `src/main/resources/initial_data.sql` para precargar datos para usuarios, categorías y productos.
 *   **Arquitectura Limpia**: Separación clara de responsabilidades entre las capas de Dominio, Datos y Presentación, facilitando la mantenibilidad y la escalabilidad.
+*   **Inyección de Dependencias Manual**: Las dependencias (repositorios, casos de uso) se gestionan y se inyectan manualmente en la clase `AppRunner`, demostrando un control explícito sobre el flujo de dependencias.
+
+## ✅ Estrategia de Testing
+
+El proyecto cuenta con una estrategia de testing robusta que cubre las capas de Dominio y Datos. Se han implementado tests unitarios para los Casos de Uso (capa de Dominio) utilizando MockK, y tests de integración para las implementaciones de Repositorio y el `DatabaseManager` (capa de Datos) utilizando una base de datos SQLite en memoria.
+
+Para un detalle exhaustivo sobre la estrategia de testing, las herramientas utilizadas y la cobertura, consulta el archivo [`TestingReadme.md`](TestingReadme.md).
 
 ## 💡 Cómo Ejecutar la Aplicación
 
@@ -58,4 +65,4 @@ Al ejecutar, verás la salida en la consola que muestra la inicialización de la
 
 *   **Migraciones de Base de Datos**: Para gestionar la evolución del esquema de la base de datos en el futuro, se recomienda integrar una herramienta de migración como [Flyway](https://flywaydb.org/) o [Liquibase](https://www.liquibase.org/). Esto permitiría versionar los cambios del esquema de forma controlada.
 *   **Manejo de Errores**: Implementar un manejo de errores más robusto y específico para la aplicación.
-*   **Inyección de Dependencias**: Para aplicaciones más grandes, se podría considerar una librería de inyección de dependencias (como Koin o Dagger) para gestionar las instancias de repositorios y casos de uso de forma más automática.
+*   **Librería de Inyección de Dependencias**: Para aplicaciones más grandes o con una complejidad de dependencias creciente, se podría considerar la integración de una librería de inyección de dependencias (como Koin o Dagger) para automatizar y simplificar la gestión de dependencias.

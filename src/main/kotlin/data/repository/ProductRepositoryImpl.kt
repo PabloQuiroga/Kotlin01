@@ -10,10 +10,9 @@ import java.sql.SQLException
 
 class ProductRepositoryImpl : ProductRepository {
 
+    // Modificado para usar DatabaseManager.executeWithConnection
     private fun <T> withConnection(block: (Connection) -> T): T {
-        DatabaseManager.getConnection().use { conn ->
-            return block(conn)
-        }
+        return DatabaseManager.executeWithConnection(block)
     }
 
     override fun getAllProducts(): List<Product> = withConnection { conn ->

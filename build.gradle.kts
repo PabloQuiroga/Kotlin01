@@ -11,7 +11,8 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
-    implementation(libs.sqlite.jdbc) // Añadimos la dependencia de SQLite
+    implementation(libs.sqlite.jdbc)
+    testImplementation(libs.mockk) // Añadimos la dependencia de MockK para tests
 }
 
 tasks.test {

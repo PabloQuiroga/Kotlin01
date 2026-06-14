@@ -9,10 +9,9 @@ import java.sql.SQLException
 
 class CategoryRepositoryImpl : CategoryRepository {
 
+    // Reemplazamos la función withConnection local por la de DatabaseManager
     private fun <T> withConnection(block: (Connection) -> T): T {
-        DatabaseManager.getConnection().use { conn ->
-            return block(conn)
-        }
+        return DatabaseManager.executeWithConnection(block)
     }
 
     override fun getAllCategories(): List<Category> = withConnection { conn ->

@@ -11,10 +11,9 @@ import java.sql.SQLException
 
 class UserRepositoryImpl : UserRepository {
 
+    // Modificado para usar DatabaseManager.executeWithConnection
     private fun <T> withConnection(block: (Connection) -> T): T {
-        DatabaseManager.getConnection().use { conn ->
-            return block(conn)
-        }
+        return DatabaseManager.executeWithConnection(block)
     }
 
     override fun getAllUsers(): List<User> = withConnection { conn ->
