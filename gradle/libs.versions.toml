@@ -1,8 +1,10 @@
 [versions]
 kotlin = "2.3.21"
+sqlite-jdbc = "3.45.1.0" # Versión actual de sqlite-jdbc
 
 [libraries]
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
+sqlite-jdbc = { group = "org.xerial", name = "sqlite-jdbc", version.ref = "sqlite-jdbc" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

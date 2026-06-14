@@ -1,8 +1,8 @@
 plugins {
-    alias(libs.plugins.kotlin.jvm)
+    kotlin("jvm") version "2.0.0"
 }
 
-group = "org.siar"
+group = "org.example"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -10,13 +10,14 @@ repositories {
 }
 
 dependencies {
-    testImplementation(libs.kotlin.test)
-}
-
-kotlin {
-    jvmToolchain(21)
+    testImplementation(kotlin("test"))
+    implementation(libs.sqlite.jdbc) // Añadimos la dependencia de SQLite
 }
 
 tasks.test {
     useJUnitPlatform()
+}
+
+kotlin {
+    jvmToolchain(21)
 }
