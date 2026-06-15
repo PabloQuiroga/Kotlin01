@@ -2,6 +2,7 @@
 kotlin = "2.2.21"
 sqlite-jdbc = "3.45.1.0"
 mockk = "1.13.10"
+detekt = "2.0.0-alpha.4" # Versión de Detekt actualizada
 
 [libraries]
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
@@ -10,3 +11,4 @@ mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 
 [plugins]
 jacoco = { id = "org.gradle.jacoco" }
+detekt = { id = "dev.detekt", version.ref = "detekt" } # Declaración del plugin de Detekt (nuevo ID)
