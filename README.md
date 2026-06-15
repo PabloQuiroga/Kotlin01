@@ -21,6 +21,11 @@ Este proyecto tiene como objetivo servir de laboratorio personal para practicar,
 - **Base de Datos:** SQLite (mediante `org.xerial:sqlite-jdbc`)
 - **Testing:** JUnit 5, MockK
 
+## 🔍 Herramientas de Calidad de Código
+- **Detekt:** Una herramienta de análisis estático para Kotlin que ayuda a mantener la calidad del código, detectar "code smells" y asegurar el cumplimiento de estándares de codificación.
+  - **Configuración:** Las reglas de Detekt se configuran en `config/detekt/detekt.yml`.
+  - **Ejecución:** Se integra con el ciclo de vida de Gradle y se ejecuta automáticamente con la tarea `check`. También puedes ejecutarlo manualmente con `./gradlew detekt`.
+
 ## 📂 Estructura del Proyecto
 El proyecto sigue una estructura de Arquitectura Limpia, organizada en capas:
 - `src/main/kotlin/domain`: Contiene los modelos, interfaces de repositorio y casos de uso (lógica de negocio pura).

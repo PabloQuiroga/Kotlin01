@@ -17,15 +17,17 @@ La implementación se distribuye en las siguientes capas y directorios:
 *   **`src/main/kotlin/domain/usecase`**:
     *   `UserUseCases.kt`, `CategoryUseCases.kt`, `ProductUseCases.kt`: Clases que encapsulan la lógica de negocio relacionada con los usuarios, categorías y productos. Utilizan las interfaces de repositorio correspondientes para realizar operaciones de datos sin conocer los detalles de implementación.
 *   **`src/main/kotlin/data/source`**:
-    *   `DatabaseManager.kt`: Objeto singleton encargado de gestionar la conexión a la base de datos SQLite, la creación del esquema (tablas `geos`, `addresses`, `users`, `categories`, `products`) y la carga de scripts SQL externos.
+    *   `DatabaseManager.kt`: Objeto singleton encargado de gestionar la conexión a la base de datos SQLite, la carga del esquema de la base de datos desde `sql/schema.sql` y la carga de scripts SQL externos.
 *   **`src/main/kotlin/data/repository`**:
-    *   `UserRepositoryImpl.kt`, `CategoryRepositoryImpl.kt`, `ProductRepositoryImpl.kt`: Implementaciones concretas de las interfaces de repositorio. Contienen la lógica JDBC para interactuar con SQLite, incluyendo transacciones y mapeo de `ResultSet` a objetos de dominio.
+    *   `UserRepositoryImpl.kt`, `CategoryRepositoryImpl.kt`, `ProductRepositoryImpl.kt`: Implementaciones concretas de las interfaces de repositorio. Ahora cargan sus sentencias SQL desde archivos `.sql` dedicados en `src/main/resources/sql/` utilizando `SqlLoader`. Contienen la lógica JDBC para interactuar con SQLite, incluyendo transacciones y mapeo de `ResultSet` a objetos de dominio.
 *   **`src/main/kotlin/presentation/documentation`**:
     *   Este archivo `SQLiteReadme.md` y `TestingReadme.md`.
 *   **`src/main/kotlin/presentation/Main.kt`**:
     *   Punto de entrada de la aplicación. Contiene la clase `AppRunner` que orquesta la inicialización de la base de datos, la carga de datos iniciales y la demostración de las operaciones CRUD para `User`, `Category` y `Product` a través de los casos de uso.
 *   **`src/main/resources/initial_data.sql`**:
     *   Archivo SQL que contiene sentencias `INSERT` para poblar la base de datos con datos de ejemplo para `User`, `Category` y `Product` al inicio, si la base de datos está vacía.
+*   **`src/main/resources/sql/`**:
+    *   Nuevo directorio que contiene archivos `.sql` dedicados para cada entidad (`product.sql`, `user.sql`, `category.sql`) y para la definición del esquema de la base de datos (`schema.sql`). Esto centraliza y organiza todas las sentencias SQL, desacoplándolas del código Kotlin.
 
 ## 🛠️ Dependencias
 
@@ -36,10 +38,10 @@ La integración con SQLite se realiza a través del driver JDBC:
 ## 🚀 Funcionalidades Implementadas
 
 *   **Conexión a SQLite**: Gestión de la conexión a una base de datos SQLite basada en archivo (`my_clean_architecture_database.db`).
-*   **Creación de Tablas**: `DatabaseManager` crea automáticamente las tablas `geos`, `addresses`, `users`, `categories` y `products` con sus respectivas relaciones y claves foráneas al iniciar la aplicación.
-*   **Operaciones CRUD para `User`**: Implementación completa de Crear, Leer (todos y por ID), Actualizar y Eliminar usuarios, incluyendo sus `Address` y `Geo` asociados, manejando transacciones para asegurar la integridad.
-*   **Operaciones CRUD para `Category`**: Implementación completa de Crear, Leer (todos y por ID), Actualizar y Eliminar categorías.
-*   **Operaciones CRUD para `Product`**: Implementación completa de Crear, Leer (todos y por ID), Actualizar y Eliminar productos, incluyendo su `Category` asociada.
+*   **Creación de Tablas**: `DatabaseManager` ahora carga el esquema de la base de datos desde `sql/schema.sql` al iniciar la aplicación, creando las tablas `geos`, `addresses`, `users`, `categories` y `products` con sus respectivas relaciones y claves foráneas.
+*   **Operaciones CRUD para `User`**: Implementación completa de Crear, Leer (todos y por ID), Actualizar y Eliminar usuarios, incluyendo sus `Address` y `Geo` asociados, manejando transacciones para asegurar la integridad. Las sentencias SQL se cargan desde `user.sql`.
+*   **Operaciones CRUD para `Category`**: Implementación completa de Crear, Leer (todos y por ID), Actualizar y Eliminar categorías. Las sentencias SQL se cargan desde `category.sql`.
+*   **Operaciones CRUD para `Product`**: Implementación completa de Crear, Leer (todos y por ID), Actualizar y Eliminar productos, incluyendo su `Category` asociada. Las sentencias SQL se cargan desde `product.sql`.
 *   **Carga de Datos Iniciales**: La aplicación verifica si la base de datos está vacía y, si es así, ejecuta las sentencias SQL del archivo `src/main/resources/initial_data.sql` para precargar datos para usuarios, categorías y productos.
 *   **Arquitectura Limpia**: Separación clara de responsabilidades entre las capas de Dominio, Datos y Presentación, facilitando la mantenibilidad y la escalabilidad.
 *   **Inyección de Dependencias Manual**: Las dependencias (repositorios, casos de uso) se gestionan y se inyectan manualmente en la clase `AppRunner`, demostrando un control explícito sobre el flujo de dependencias.

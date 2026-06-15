@@ -3,11 +3,15 @@ package data.repository
 import data.source.DatabaseManager
 import domain.model.Category
 import domain.repository.CategoryRepository
+import util.SqlLoader
 import java.sql.Connection
 import java.sql.ResultSet
 import java.sql.SQLException
 
 class CategoryRepositoryImpl : CategoryRepository {
+
+    private val categorySqlQueries: Map<String, String> =
+        SqlLoader.loadSqlQueries("sql/category.sql")
 
     // Reemplazamos la función withConnection local por la de DatabaseManager
     private fun <T> withConnection(block: (Connection) -> T): T {
@@ -16,7 +20,8 @@ class CategoryRepositoryImpl : CategoryRepository {
 
     override fun getAllCategories(): List<Category> = withConnection { conn ->
         val categories = mutableListOf<Category>()
-        val sql = "SELECT id, name, description FROM categories"
+        val sql = categorySqlQueries["getAllCategories"]
+            ?: throw IllegalStateException("SQL query 'getAllCategories' not found.")
         conn.createStatement().use { stmt ->
             val rs = stmt.executeQuery(sql)
             while (rs.next()) {
@@ -27,7 +32,8 @@ class CategoryRepositoryImpl : CategoryRepository {
     }
 
     override fun getCategoryById(id: Long): Category? = withConnection { conn ->
-        val sql = "SELECT id, name, description FROM categories WHERE id = ?"
+        val sql = categorySqlQueries["getCategoryById"]
+            ?: throw IllegalStateException("SQL query 'getCategoryById' not found.")
         conn.prepareStatement(sql).use { pstmt ->
             pstmt.setLong(1, id)
             val rs = pstmt.executeQuery()
@@ -40,7 +46,8 @@ class CategoryRepositoryImpl : CategoryRepository {
     }
 
     override fun addCategory(category: Category): Category = withConnection { conn ->
-        val sql = "INSERT INTO categories(name, description) VALUES(?, ?)"
+        val sql = categorySqlQueries["addCategory"]
+            ?: throw IllegalStateException("SQL query 'addCategory' not found.")
         conn.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS).use { pstmt ->
             pstmt.setString(1, category.name)
             pstmt.setString(2, category.description)
@@ -57,7 +64,8 @@ class CategoryRepositoryImpl : CategoryRepository {
     }
 
     override fun updateCategory(category: Category): Category? = withConnection { conn ->
-        val sql = "UPDATE categories SET name = ?, description = ? WHERE id = ?"
+        val sql = categorySqlQueries["updateCategory"]
+            ?: throw IllegalStateException("SQL query 'updateCategory' not found.")
         conn.prepareStatement(sql).use { pstmt ->
             pstmt.setString(1, category.name)
             pstmt.setString(2, category.description)
@@ -72,7 +80,8 @@ class CategoryRepositoryImpl : CategoryRepository {
     }
 
     override fun deleteCategory(id: Long): Boolean = withConnection { conn ->
-        val sql = "DELETE FROM categories WHERE id = ?"
+        val sql = categorySqlQueries["deleteCategory"]
+            ?: throw IllegalStateException("SQL query 'deleteCategory' not found.")
         conn.prepareStatement(sql).use { pstmt ->
             pstmt.setLong(1, id)
             val rowsAffected = pstmt.executeUpdate()

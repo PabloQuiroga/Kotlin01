@@ -5,28 +5,24 @@ import domain.model.Address
 import domain.model.Geo
 import domain.model.User
 import domain.repository.UserRepository
+import util.SqlLoader
 import java.sql.Connection
 import java.sql.ResultSet
 import java.sql.SQLException
 
 class UserRepositoryImpl : UserRepository {
 
-    // Modificado para usar DatabaseManager.executeWithConnection
+    private val userSqlQueries: Map<String, String> =
+        SqlLoader.loadSqlQueries("sql/user.sql")
+
     private fun <T> withConnection(block: (Connection) -> T): T {
         return DatabaseManager.executeWithConnection(block)
     }
 
     override fun getAllUsers(): List<User> = withConnection { conn ->
         val users = mutableListOf<User>()
-        val sql = """
-            SELECT
-                u.id AS user_id, u.name AS user_name, u.username, u.email, u.phone, u.website,
-                a.id AS address_id, a.street, a.suite, a.city, a.zipcode,
-                g.id AS geo_id, g.lat, g.lng
-            FROM users u
-            JOIN addresses a ON u.address_id = a.id
-            JOIN geos g ON a.geo_id = g.id
-        """.trimIndent()
+        val sql = userSqlQueries["getAllUsers"]
+            ?: throw IllegalStateException("SQL query 'getAllUsers' not found.")
         conn.createStatement().use { stmt ->
             val rs = stmt.executeQuery(sql)
             while (rs.next()) {
@@ -37,16 +33,8 @@ class UserRepositoryImpl : UserRepository {
     }
 
     override fun getUserById(id: Long): User? = withConnection { conn ->
-        val sql = """
-            SELECT
-                u.id AS user_id, u.name AS user_name, u.username, u.email, u.phone, u.website,
-                a.id AS address_id, a.street, a.suite, a.city, a.zipcode,
-                g.id AS geo_id, g.lat, g.lng
-            FROM users u
-            JOIN addresses a ON u.address_id = a.id
-            JOIN geos g ON a.geo_id = g.id
-            WHERE u.id = ?
-        """.trimIndent()
+        val sql = userSqlQueries["getUserById"]
+            ?: throw IllegalStateException("SQL query 'getUserById' not found.")
         conn.prepareStatement(sql).use { pstmt ->
             pstmt.setLong(1, id)
             val rs = pstmt.executeQuery()
@@ -69,7 +57,8 @@ class UserRepositoryImpl : UserRepository {
             val addressId = insertAddress(conn, user.address.copy(geo = user.address.geo.copy(id = geoId)), geoId)
 
             // 3. Insert User
-            val userSql = "INSERT INTO users(name, username, email, phone, website, address_id) VALUES(?, ?, ?, ?, ?, ?)"
+            val userSql = userSqlQueries["addUser"]
+                ?: throw IllegalStateException("SQL query 'addUser' not found.")
             conn.prepareStatement(userSql, java.sql.Statement.RETURN_GENERATED_KEYS).use { pstmt ->
                 pstmt.setString(1, user.name)
                 pstmt.setString(2, user.username)
@@ -97,7 +86,8 @@ class UserRepositoryImpl : UserRepository {
     }
 
     private fun insertGeo(conn: Connection, geo: Geo): Long {
-        val geoSql = "INSERT INTO geos(lat, lng) VALUES(?, ?)"
+        val geoSql = userSqlQueries["insertGeo"]
+            ?: throw IllegalStateException("SQL query 'insertGeo' not found.")
         conn.prepareStatement(geoSql, java.sql.Statement.RETURN_GENERATED_KEYS).use { pstmt ->
             pstmt.setString(1, geo.lat)
             pstmt.setString(2, geo.lng)
@@ -113,7 +103,8 @@ class UserRepositoryImpl : UserRepository {
     }
 
     private fun insertAddress(conn: Connection, address: Address, geoId: Long): Long {
-        val addressSql = "INSERT INTO addresses(street, suite, city, zipcode, geo_id) VALUES(?, ?, ?, ?, ?)"
+        val addressSql = userSqlQueries["insertAddress"]
+            ?: throw IllegalStateException("SQL query 'insertAddress' not found.")
         conn.prepareStatement(addressSql, java.sql.Statement.RETURN_GENERATED_KEYS).use { pstmt ->
             pstmt.setString(1, address.street)
             pstmt.setString(2, address.suite)
@@ -146,7 +137,8 @@ class UserRepositoryImpl : UserRepository {
             } ?: throw SQLException("Address ID is required for update.")
 
             // 3. Update User
-            val userSql = "UPDATE users SET name = ?, username = ?, email = ?, phone = ?, website = ? WHERE id = ?"
+            val userSql = userSqlQueries["updateUser"]
+                ?: throw IllegalStateException("SQL query 'updateUser' not found.")
             conn.prepareStatement(userSql).use { pstmt ->
                 pstmt.setString(1, user.name)
                 pstmt.setString(2, user.username)
@@ -173,7 +165,8 @@ class UserRepositoryImpl : UserRepository {
     }
 
     private fun updateGeo(conn: Connection, geo: Geo) {
-        val geoSql = "UPDATE geos SET lat = ?, lng = ? WHERE id = ?"
+        val geoSql = userSqlQueries["updateGeo"]
+            ?: throw IllegalStateException("SQL query 'updateGeo' not found.")
         conn.prepareStatement(geoSql).use { pstmt ->
             pstmt.setString(1, geo.lat)
             pstmt.setString(2, geo.lng)
@@ -183,7 +176,8 @@ class UserRepositoryImpl : UserRepository {
     }
 
     private fun updateAddress(conn: Connection, address: Address) {
-        val addressSql = "UPDATE addresses SET street = ?, suite = ?, city = ?, zipcode = ? WHERE id = ?"
+        val addressSql = userSqlQueries["updateAddress"]
+            ?: throw IllegalStateException("SQL query 'updateAddress' not found.")
         conn.prepareStatement(addressSql).use { pstmt ->
             pstmt.setString(1, address.street)
             pstmt.setString(2, address.suite)
@@ -199,7 +193,8 @@ class UserRepositoryImpl : UserRepository {
 
         try {
             // Get address_id and geo_id first to delete them
-            val selectIdsSql = "SELECT address_id FROM users WHERE id = ?"
+            val selectIdsSql = userSqlQueries["selectAddressIdForDelete"]
+                ?: throw IllegalStateException("SQL query 'selectAddressIdForDelete' not found.")
             var addressId: Long? = null
             conn.prepareStatement(selectIdsSql).use { pstmt ->
                 pstmt.setLong(1, id)
@@ -214,7 +209,8 @@ class UserRepositoryImpl : UserRepository {
                 return@withConnection false
             }
 
-            val selectGeoIdSql = "SELECT geo_id FROM addresses WHERE id = ?"
+            val selectGeoIdSql = userSqlQueries["selectGeoIdForDelete"]
+                ?: throw IllegalStateException("SQL query 'selectGeoIdForDelete' not found.")
             var geoId: Long? = null
             conn.prepareStatement(selectGeoIdSql).use { pstmt ->
                 pstmt.setLong(1, addressId!!)
@@ -225,14 +221,16 @@ class UserRepositoryImpl : UserRepository {
             }
 
             // Delete User
-            val deleteUserSql = "DELETE FROM users WHERE id = ?"
+            val deleteUserSql = userSqlQueries["deleteUser"]
+                ?: throw IllegalStateException("SQL query 'deleteUser' not found.")
             val userRowsAffected = conn.prepareStatement(deleteUserSql).use { pstmt ->
                 pstmt.setLong(1, id)
                 pstmt.executeUpdate()
             }
 
             // Delete Address (if cascade is not fully handled by DB or for explicit control)
-            val deleteAddressSql = "DELETE FROM addresses WHERE id = ?"
+            val deleteAddressSql = userSqlQueries["deleteAddress"]
+                ?: throw IllegalStateException("SQL query 'deleteAddress' not found.")
             conn.prepareStatement(deleteAddressSql).use { pstmt ->
                 pstmt.setLong(1, addressId!!)
                 pstmt.executeUpdate()
@@ -240,7 +238,8 @@ class UserRepositoryImpl : UserRepository {
 
             // Delete Geo (if cascade is not fully handled by DB or for explicit control)
             if (geoId != null) {
-                val deleteGeoSql = "DELETE FROM geos WHERE id = ?"
+                val deleteGeoSql = userSqlQueries["deleteGeo"]
+                    ?: throw IllegalStateException("SQL query 'deleteGeo' not found.")
                 conn.prepareStatement(deleteGeoSql).use { pstmt ->
                     pstmt.setLong(1, geoId!!)
                     pstmt.executeUpdate()
