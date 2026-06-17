@@ -72,7 +72,15 @@ class UserRepositoryImpl : UserRepository {
                 if (generatedKeys.next()) {
                     val newUserId = generatedKeys.getLong(1)
                     conn.commit() // Commit transaction
-                    return@withConnection user.copy(id = newUserId, address = user.address.copy(id = addressId, geo = user.address.geo.copy(id = geoId)))
+                    return@withConnection user.copy(
+                        id = newUserId,
+                        address = user.address.copy(
+                            id = addressId,
+                            geo = user.address.geo.copy(
+                                id = geoId
+                            )
+                        )
+                    )
                 } else {
                     throw SQLException("Failed to retrieve auto-generated user ID.")
                 }

@@ -1,7 +1,7 @@
 plugins {
     kotlin("jvm") version "2.2.21"
     alias(libs.plugins.jacoco)
-    //alias(libs.plugins.detekt) // Aplicamos el plugin de Detekt usando alias
+    alias(libs.plugins.detekt)
 }
 
 group = "org.example"
@@ -11,13 +11,11 @@ repositories {
     mavenCentral()
 }
 
-val detekt by configurations.creating
 
 dependencies {
     testImplementation(kotlin("test"))
     implementation(libs.sqlite.jdbc)
-    testImplementation(libs.mockk) // Añadimos la dependencia de MockK para tests
-    detekt("dev.detekt:detekt-cli:2.0.0-alpha.4")
+    testImplementation(libs.mockk)
 }
 
 tasks.test {
@@ -30,11 +28,11 @@ kotlin {
 
 // Configuración de JaCoCo
 jacoco {
-    toolVersion = "0.8.12" // La versión de la herramienta JaCoCo sí se especifica aquí
+    toolVersion = "0.8.12"
 }
 
 tasks.jacocoTestReport {
-    dependsOn(tasks.test) // Asegura que los tests se ejecuten antes del informe
+    dependsOn(tasks.test)
     reports {
         xml.required.set(true)
         csv.required.set(false)
@@ -44,26 +42,9 @@ tasks.jacocoTestReport {
     executionData.setFrom(fileTree(layout.buildDirectory.get().asFile).include("jacoco/*.exec"))
 }
 
-//detekt {
-//    toolVersion = "2.0.0-alpha.4"
-//    config.setFrom(file("config/detekt/detekt.yml"))
-//    buildUponDefaultConfig = true
-//}
-
-
-val detektTask = tasks.register<JavaExec>("detekt") {
-    mainClass.set("dev.detekt.cli.Main")
-    classpath = detekt
-
-    val input = projectDir
-    val config = "config/detekt/detekt.yml"
-    val exclude = ".*/build/.*,.*/resources/.*"
-    val params = listOf("-i", input, "-c", config, "-ex", exclude)
-
-    args(params)
-}
-
-// Remove this block if you don't want to run detekt on every build
-tasks.check {
-    dependsOn(detektTask)
+detekt {
+    buildUponDefaultConfig = true
+    allRules = false
+    config.setFrom("$projectDir/config/detekt/detekt.yml")
+    baseline = file("$projectDir/config/detekt/baseline.xml")
 }

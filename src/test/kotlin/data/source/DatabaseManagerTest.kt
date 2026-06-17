@@ -4,13 +4,12 @@ import data.repository.CategoryRepositoryImpl
 import data.repository.ProductRepositoryImpl
 import data.repository.UserRepositoryImpl
 import domain.model.Category
-import domain.model.Product
-import domain.model.User
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.io.File
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.SQLException
@@ -39,7 +38,12 @@ class DatabaseManagerTest {
 
         // Añadir una categoría de prueba para que los productos puedan referenciarla
         // Cambiamos el nombre para que no haya conflicto con initial_data.sql
-        testCategory = categoryRepository.addCategory(Category(name = "Test Category", description = "Category for testing purposes"))
+        testCategory = categoryRepository.addCategory(
+            Category(
+                name = "Test Category",
+                description = "Category for testing purposes"
+            )
+        )
     }
 
     @AfterEach

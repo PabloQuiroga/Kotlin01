@@ -55,7 +55,11 @@ object DatabaseManager {
             if (!isTestMode) {
                 conn.close()
             } else {
-                println("[DEBUG] Thread ${Thread.currentThread().name}: executeWithConnection finally block: NOT closing connection because isTestMode is true.")
+                println(
+                    "[DEBUG] Thread ${Thread.currentThread().name}: " +
+                            "executeWithConnection finally block: " +
+                            "NOT closing connection because isTestMode is true."
+                )
             }
         }
     }
