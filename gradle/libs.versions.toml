@@ -1,13 +1,16 @@
 [versions]
-kotlin = "2.2.21"
-sqlite-jdbc = "3.45.1.0"
-mockk = "1.13.10"
+kotlin = "2.4.0"
+sqlite-jdbc = "3.53.2.0"
+mockk = "1.14.11"
 detekt = "1.23.8"
+koin = "4.2.2"
 
 [libraries]
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
 sqlite-jdbc = { group = "org.xerial", name = "sqlite-jdbc", version.ref = "sqlite-jdbc" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" } # Añadido: Koin Core
+koin-test = { group = "io.insert-koin", name = "koin-test", version.ref = "koin" } # Añadido: Koin Test
 
 [plugins]
 jacoco = { id = "org.gradle.jacoco" }
