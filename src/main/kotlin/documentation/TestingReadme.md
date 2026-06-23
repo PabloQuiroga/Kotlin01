@@ -10,6 +10,7 @@ El objetivo principal es asegurar la corrección y robustez de la lógica de neg
 
 *   **JUnit 5**: Framework de testing principal para Kotlin/JVM.
 *   **MockK**: Librería de mocking para Kotlin, utilizada para crear dobles de prueba (mocks) de interfaces y clases, permitiendo el aislamiento de unidades de código.
+*   **Koin**: Framework de Inyección de Dependencias utilizado para gestionar y proporcionar las instancias de las dependencias en los tests de integración, asegurando que se prueben los componentes con sus dependencias reales (o configuradas por Koin).
 *   **SQLite en Memoria**: Para los tests de la capa de datos, se utiliza una base de datos SQLite que se ejecuta completamente en memoria (`jdbc:sqlite::memory:`), lo que garantiza tests rápidos, aislados y sin efectos secundarios en el sistema de archivos.
 
 ## 📂 Cobertura de Tests por Capa
@@ -26,6 +27,7 @@ La capa de Dominio contiene la lógica de negocio central y las entidades. Los t
 *   **Cómo se testea**:
     *   **Tests Unitarios**: Se utilizan mocks de las interfaces de repositorio (`UserRepository`, `CategoryRepository`, `ProductRepository`) para aislar completamente los casos de uso de la implementación real de la base de datos.
     *   **MockK**: Permite definir el comportamiento esperado de los mocks (`every { ... } returns ...`) y verificar que los métodos fueron llamados con los argumentos correctos (`verify { ... }`).
+    *   **Koin**: **No se utiliza Koin en estos tests unitarios**, ya que el objetivo es probar la unidad de código de forma aislada con mocks.
 
 *   **Archivos de Test Implementados**:
     *   `src/test/kotlin/domain/usecase/UserUseCasesTest.kt`
@@ -43,6 +45,11 @@ La capa de Datos es responsable de la persistencia y la interacción con la base
 *   **Cómo se testea**:
     *   **Tests de Integración**: Se utiliza una base de datos SQLite en memoria (`jdbc:sqlite::memory:`) para cada test o suite de tests. Esto proporciona un entorno de base de datos real pero aislado y rápido.
     *   **`DatabaseManager` modificado para testabilidad**: Se añadió un mecanismo (`setTestConnection`, `clearTestConnection`) a `DatabaseManager` para permitir la inyección de la conexión de base de datos en memoria desde los tests.
+    *   **Koin**: Se integra Koin para gestionar las dependencias de los repositorios.
+        *   Las clases de test extienden `KoinTest`.
+        *   Se inicia el contexto de Koin con `startKoin { modules(allModules) }` en el método `@BeforeEach`.
+        *   Las instancias de los repositorios se obtienen mediante inyección de Koin (`val repository: MyRepository by inject()`).
+        *   El contexto de Koin se detiene con `stopKoin()` en el método `@AfterEach` para asegurar el aislamiento entre tests.
 
 *   **Archivos de Test Implementados**:
     *   `src/test/kotlin/data/repository/UserRepositoryImplTest.kt`
@@ -54,7 +61,7 @@ La capa de Datos es responsable de la persistencia y la interacción con la base
 
 Para ejecutar todos los tests del proyecto:
 
-1.  **Sincronizar Proyecto Gradle**: Asegúrate de que tu IDE (Android Studio/IntelliJ IDEA) haya sincronizado el proyecto con los archivos Gradle para descargar las dependencias de testing (JUnit, MockK).
+1.  **Sincronizar Proyecto Gradle**: Asegúrate de que tu IDE (Android Studio/IntelliJ IDEA) haya sincronizado el proyecto con los archivos Gradle para descargar las dependencias de testing (JUnit, MockK, Koin).
 2.  **Ejecutar desde el IDE**:
     *   Puedes navegar a la carpeta `src/test/kotlin` en la vista de proyecto.
     *   Haz clic derecho en la carpeta `kotlin` (dentro de `src/test`) y selecciona "Run 'All Tests'".

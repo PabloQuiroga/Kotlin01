@@ -3,6 +3,7 @@ package data.source
 import data.repository.CategoryRepositoryImpl
 import data.repository.ProductRepositoryImpl
 import data.repository.UserRepositoryImpl
+import di.allModules
 import domain.model.Category
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -10,32 +11,38 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import org.koin.test.KoinTest
+import org.koin.test.inject
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.SQLException
 
-class DatabaseManagerTest {
+class DatabaseManagerTest : KoinTest { // Extender de KoinTest para usar inject/get
 
     private lateinit var connection: Connection
-    private lateinit var userRepository: UserRepositoryImpl
-    private lateinit var categoryRepository: CategoryRepositoryImpl
-    private lateinit var productRepository: ProductRepositoryImpl
+
+    // Inyectar los repositorios usando Koin
+    private val userRepository: UserRepositoryImpl by inject()
+    private val categoryRepository: CategoryRepositoryImpl by inject()
+    private val productRepository: ProductRepositoryImpl by inject()
 
     // Necesitamos una categoría de prueba para los productos en algunos tests
     private lateinit var testCategory: Category
 
     @BeforeEach
     fun setUp() {
+        // Iniciar Koin con los módulos de la aplicación
+        startKoin {
+            modules(allModules)
+        }
+
         // Usar una base de datos SQLite en memoria para cada test
         connection = DriverManager.getConnection("jdbc:sqlite::memory:")
         DatabaseManager.setTestConnection(connection) // Inyectar la conexión de prueba
-        DatabaseManager.initDatabase() // Inicializar el esquema en la DB en memoria
-
-        // Inicializar repositorios para verificar datos
-        userRepository = UserRepositoryImpl()
-        categoryRepository = CategoryRepositoryImpl()
-        productRepository = ProductRepositoryImpl()
-
+        DatabaseManager.initDatabase() // Inicializar el esquema y cargar datos iniciales en la DB en memoria
+        DatabaseManager.loadInitialData()
         // Añadir una categoría de prueba para que los productos puedan referenciarla
         // Cambiamos el nombre para que no haya conflicto con initial_data.sql
         testCategory = categoryRepository.addCategory(
@@ -50,6 +57,7 @@ class DatabaseManagerTest {
     fun tearDown() {
         connection.close()
         DatabaseManager.clearTestConnection() // Limpiar la conexión de test
+        stopKoin() // Detener Koin después de cada test
     }
 
     @Test
@@ -74,9 +82,9 @@ class DatabaseManagerTest {
     }
 
     @Test
-    fun `loadSqlFile should execute SQL statements from a resource file and load data`() {
-        // Cargar el archivo SQL de datos iniciales
-        DatabaseManager.loadSqlFile("initial_data.sql")
+    fun `initial data should be loaded correctly after initDatabase`() { // Renombré el test para mayor claridad
+        // Los datos iniciales ya se cargaron en setUp() a través de initDatabase()
+        // Solo necesitamos verificar que estén presentes.
 
         // Verificar que los datos se cargaron correctamente usando los repositorios
         val users = userRepository.getAllUsers()
@@ -101,22 +109,19 @@ class DatabaseManagerTest {
 
     @Test
     fun `loadSqlFile should rollback all changes if an SQLException occurs during execution`() {
-        // 1. Cargar algunos datos iniciales válidos para establecer una base
-        DatabaseManager.loadSqlFile("initial_data.sql")
-
-        // 2. Obtener el estado de la base de datos después de la carga inicial exitosa
+        // 1. Obtener el estado de la base de datos después de la carga inicial exitosa en setUp
         val initialUserCount = userRepository.getAllUsers().size
         val initialCategoryCount = categoryRepository.getAllCategories().size
         val initialProductCount = productRepository.getAllProducts().size
 
-        // 3. Intentar cargar initial_data.sql de nuevo.
+        // 2. Intentar cargar initial_data.sql de nuevo.
         //    Esto causará UNIQUE constraint violations para usuarios, categorías y productos,
         //    lo que debería disparar una SQLException y el mecanismo de rollback de loadSqlFile.
         assertThrows(SQLException::class.java) {
             DatabaseManager.loadSqlFile("initial_data.sql")
         }
 
-        // 4. Verificar que el estado de la base de datos no ha cambiado
+        // 3. Verificar que el estado de la base de datos no ha cambiado
         //    Esto significa que no se añadieron nuevos datos ni se modificaron los existentes
         //    debido al rollback.
         assertEquals(initialUserCount, userRepository.getAllUsers().size)

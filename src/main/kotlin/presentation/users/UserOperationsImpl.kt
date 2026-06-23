@@ -4,13 +4,7 @@ import data.repository.UserRepositoryImpl
 import domain.model.User
 import domain.usecase.UserUseCases
 
-class UserOperationsImpl : UserOperations {
-    private val userUseCases: UserUseCases
-
-    init {
-        val userRepository = UserRepositoryImpl()
-        userUseCases = UserUseCases(userRepository)
-    }
+class UserOperationsImpl(private val userUseCases: UserUseCases) : UserOperations {
 
     override fun getAllUsers(): List<User> {
         return userUseCases.getAllUsers()

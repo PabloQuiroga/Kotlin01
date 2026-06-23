@@ -1,6 +1,7 @@
 package data.repository
 
 import data.source.DatabaseManager
+import di.allModules
 import domain.model.Category
 import domain.model.Product
 import org.junit.jupiter.api.AfterEach
@@ -11,25 +12,31 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import org.koin.test.KoinTest
+import org.koin.test.inject
 import java.sql.Connection
 import java.sql.DriverManager
 
-class ProductRepositoryImplTest {
+class ProductRepositoryImplTest : KoinTest { // Extender de KoinTest
 
     private lateinit var connection: Connection
-    private lateinit var productRepository: ProductRepositoryImpl
-    private lateinit var categoryRepository: CategoryRepositoryImpl // Necesitamos Category para los productos
+    private val productRepository: ProductRepositoryImpl by inject() // Inyectar con Koin
+    private val categoryRepository: CategoryRepositoryImpl by inject() // Inyectar con Koin
 
     private lateinit var testCategory: Category
 
     @BeforeEach
     fun setUp() {
+        // Iniciar Koin con los módulos de la aplicación
+        startKoin {
+            modules(allModules)
+        }
+
         connection = DriverManager.getConnection("jdbc:sqlite::memory:")
         DatabaseManager.setTestConnection(connection)
         DatabaseManager.initDatabase() // Inicializar el esquema en la DB en memoria
-
-        categoryRepository = CategoryRepositoryImpl()
-        productRepository = ProductRepositoryImpl()
 
         // Añadir una categoría de prueba para que los productos puedan referenciarla
         testCategory = categoryRepository.addCategory(Category(name = "Electronics", description = "Devices"))
@@ -39,6 +46,7 @@ class ProductRepositoryImplTest {
     fun tearDown() {
         connection.close()
         DatabaseManager.clearTestConnection()
+        stopKoin() // Detener Koin
     }
 
     @Test

@@ -1,6 +1,7 @@
 package data.repository
 
 import data.source.DatabaseManager
+import di.allModules
 import domain.model.Address
 import domain.model.Geo
 import domain.model.User
@@ -12,32 +13,36 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import org.koin.test.KoinTest
+import org.koin.test.inject
 import java.sql.Connection
 import java.sql.DriverManager
 
-class UserRepositoryImplTest {
+class UserRepositoryImplTest : KoinTest { // Extender de KoinTest
 
     private lateinit var connection: Connection
-    private lateinit var userRepository: UserRepositoryImpl
-
-
+    private val userRepository: UserRepositoryImpl by inject() // Inyectar con Koin
 
     @BeforeEach
     fun setUp() {
+        // Iniciar Koin con los módulos de la aplicación
+        startKoin {
+            modules(allModules)
+        }
+
         // Usar una base de datos SQLite en memoria para cada test
         connection = DriverManager.getConnection("jdbc:sqlite::memory:")
-        // Sobrescribir la función getConnection de DatabaseManager para usar nuestra conexión en memoria
-        // Esto es un hack para testing, en una app real usarías inyección de dependencias para esto
-        DatabaseManager.setTestConnection(connection)
-
+        DatabaseManager.setTestConnection(connection) // Sobrescribir la función getConnection de DatabaseManager para usar nuestra conexión en memoria
         DatabaseManager.initDatabase() // Inicializar el esquema en la DB en memoria
-        userRepository = UserRepositoryImpl()
     }
 
     @AfterEach
     fun tearDown() {
         connection.close() // Cerrar la conexión después de cada test
         DatabaseManager.clearTestConnection() // Limpiar la conexión de test
+        stopKoin() // Detener Koin
     }
 
     @Test

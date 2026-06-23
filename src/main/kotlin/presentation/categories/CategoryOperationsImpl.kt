@@ -1,16 +1,9 @@
 package presentation.categories
 
-import data.repository.CategoryRepositoryImpl
 import domain.model.Category
 import domain.usecase.CategoryUseCases
 
-class CategoryOperationsImpl : CategoryOperations {
-    private val categoryUseCases: CategoryUseCases
-
-    init {
-        val categoryRepository = CategoryRepositoryImpl()
-        categoryUseCases = CategoryUseCases(categoryRepository)
-    }
+class CategoryOperationsImpl(private val categoryUseCases: CategoryUseCases) : CategoryOperations {
 
     override fun getAllCategories(): List<Category> {
         return categoryUseCases.getAllCategories()

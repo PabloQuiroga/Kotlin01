@@ -1,6 +1,7 @@
 package data.repository
 
 import data.source.DatabaseManager
+import di.allModules
 import domain.model.Category
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -10,26 +11,35 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import org.koin.test.KoinTest
+import org.koin.test.inject
 import java.sql.Connection
 import java.sql.DriverManager
 
-class CategoryRepositoryImplTest {
+class CategoryRepositoryImplTest : KoinTest { // Extender de KoinTest
 
     private lateinit var connection: Connection
-    private lateinit var categoryRepository: CategoryRepositoryImpl
+    private val categoryRepository: CategoryRepositoryImpl by inject() // Inyectar con Koin
 
     @BeforeEach
     fun setUp() {
+        // Iniciar Koin con los módulos de la aplicación
+        startKoin {
+            modules(allModules)
+        }
+
         connection = DriverManager.getConnection("jdbc:sqlite::memory:")
         DatabaseManager.setTestConnection(connection)
         DatabaseManager.initDatabase() // Inicializar el esquema en la DB en memoria
-        categoryRepository = CategoryRepositoryImpl()
     }
 
     @AfterEach
     fun tearDown() {
         connection.close()
         DatabaseManager.clearTestConnection()
+        stopKoin() // Detener Koin
     }
 
     @Test

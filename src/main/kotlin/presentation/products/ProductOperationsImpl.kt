@@ -1,16 +1,9 @@
 package presentation.products
 
-import data.repository.ProductRepositoryImpl
 import domain.model.Product
 import domain.usecase.ProductUseCases
 
-class ProductOperationsImpl: ProductOperations {
-    private val productUseCases : ProductUseCases
-
-    init {
-        val productRepository = ProductRepositoryImpl()
-        productUseCases = ProductUseCases(productRepository)
-    }
+class ProductOperationsImpl(private val productUseCases : ProductUseCases): ProductOperations {
 
     override fun getAllProducts(): List<Product> {
         return productUseCases.getAllProducts()

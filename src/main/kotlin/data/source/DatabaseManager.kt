@@ -1,11 +1,13 @@
 package data.source
 
+import java.io.File
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.SQLException
 
 object DatabaseManager {
     private const val DB_URL = "jdbc:sqlite:./my_clean_architecture_database.db"
+    private const val DB_FILE_NAME = "./my_clean_architecture_database.db" // Nombre del archivo de la base de datos
 
     // Usamos ThreadLocal para almacenar la conexión de prueba y el flag isTestMode
     // Esto asegura que cada hilo (cada test) tenga su propia instancia, evitando conflictos en ejecución paralela.
@@ -69,6 +71,11 @@ object DatabaseManager {
         println("Database schema initialized from sql/schema.sql.")
     }
 
+    fun loadInitialData() {
+        loadSqlFile("initial_data.sql") // Cargar datos iniciales después del esquema
+        println("Initial data loaded from initial_data.sql.")
+    }
+
     fun loadSqlFile(fileName: String) {
         val resourceStream = Thread.currentThread().contextClassLoader.getResourceAsStream(fileName)
             ?: throw IllegalArgumentException("Resource file not found: $fileName")
@@ -125,6 +132,24 @@ object DatabaseManager {
                     conn.autoCommit = initialAutoCommit // Restaurar el estado original de autoCommit
                 }
             }
+        }
+    }
+
+    /**
+     * Elimina el archivo de la base de datos.
+     * Útil para reiniciar la base de datos a su estado inicial.
+     */
+    fun deleteDatabaseFile() {
+        val dbFile = File(DB_FILE_NAME)
+        if (dbFile.exists()) {
+            try {
+                dbFile.delete()
+                println("Database file '$DB_FILE_NAME' deleted successfully.")
+            } catch (e: SecurityException) {
+                System.err.println("Error deleting database file: ${e.message}")
+            }
+        } else {
+            println("Database file '$DB_FILE_NAME' does not exist.")
         }
     }
 }
