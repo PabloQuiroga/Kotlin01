@@ -39,6 +39,4 @@ class ProductOperationsImpl(private val productUseCases : ProductUseCases): Prod
     override fun deleteProduct(productId: Long): Boolean {
         return productUseCases.deleteProduct(productId)
     }
-
-
 }

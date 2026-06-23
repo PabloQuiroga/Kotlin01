@@ -34,5 +34,4 @@ class CategoryOperationsImpl(private val categoryUseCases: CategoryUseCases) : C
     override fun deleteCategory(categoryId: Long): Boolean {
         return categoryUseCases.deleteCategory(categoryId)
     }
-
 }
