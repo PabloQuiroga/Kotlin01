@@ -3,8 +3,10 @@ package presentation.basics
 /**
  * Módulo 1: Fundamentos, Val vs Var y Null Safety
  */
+@Suppress("ClassNaming")
 class Module_1_NullSafety {
 
+    @Suppress("FunctionNaming")
     fun var_val(){
         // var: Mutable.
         var score = 10
@@ -15,6 +17,7 @@ class Module_1_NullSafety {
         //age = 31 // Error de compilación
     }
 
+    @Suppress("FunctionNaming")
     fun string_templates(name: String, price: Double){
         val greeting = "Hola, $name!" // Incorpora variable en la cadena
         println(greeting)
@@ -23,6 +26,7 @@ class Module_1_NullSafety {
         println("El precio total es ${price + tax} pesos.") // Expresiones dentro de la cadena
     }
 
+    @Suppress("FunctionNaming")
     fun null_safety(){
         // 1. Tipos no nulos por defecto
         var name: String = "Kotlin"
@@ -42,6 +46,7 @@ class Module_1_NullSafety {
         // val forcedLength = nullableName!!.length // Lanzaría NullPointerException
     }
 
+    @Suppress("FunctionNaming")
     fun safety_cast(){
         // 6. El operador Safe Cast (as?)
         // Intenta castear a un tipo, devolviendo null si falla en lugar de lanzar una ClassCastException.

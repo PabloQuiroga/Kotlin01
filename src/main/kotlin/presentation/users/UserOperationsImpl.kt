@@ -1,6 +1,5 @@
 package presentation.users
 
-import data.repository.UserRepositoryImpl
 import domain.model.User
 import domain.usecase.UserUseCases
 

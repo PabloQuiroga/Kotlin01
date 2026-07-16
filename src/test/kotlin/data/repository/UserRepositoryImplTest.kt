@@ -34,7 +34,8 @@ class UserRepositoryImplTest : KoinTest { // Extender de KoinTest
 
         // Usar una base de datos SQLite en memoria para cada test
         connection = DriverManager.getConnection("jdbc:sqlite::memory:")
-        DatabaseManager.setTestConnection(connection) // Sobrescribir la función getConnection de DatabaseManager para usar nuestra conexión en memoria
+        // Sobrescribir la función getConnection de DatabaseManager para usar nuestra conexión en memoria
+        DatabaseManager.setTestConnection(connection)
         DatabaseManager.initDatabase() // Inicializar el esquema en la DB en memoria
     }
 
