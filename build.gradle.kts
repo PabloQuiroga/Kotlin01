@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jacoco)
     alias(libs.plugins.detekt)
 }
+apply(from = "$rootDir/gradle/customTasks.gradle.kts")
 
 group = "org.example"
 version = "1.0-SNAPSHOT"
