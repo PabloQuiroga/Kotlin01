@@ -20,7 +20,7 @@ jobs:
 
     env:
       ENABLED_DETEKT: false
-
+      ENABLED_COPY_DOCS: true
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -39,17 +39,18 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
+      - name: "Detekt run"
+        if: ${{ env.ENABLED_DETEKT == 'true' }}
+        run: |
+          echo "Running Detekt..."
+          ./gradlew detekt
+
       # Custom tasks
       - name: "Custom tasks"
         run: | # el pipe es necesario para multilinea
           # unitTest
           echo "Running unit tests..."
-          ./gradlew test
-          
-          # Detekt
-          if: ${{ secrets.ENABLED_DETEKT }}
-          echo "Running Detekt..."
-          ./gradlew detekt
+          ./gradlew test          
           
           # Copy docs to build output
           echo "Copying docs..."
