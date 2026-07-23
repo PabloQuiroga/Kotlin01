@@ -18,8 +18,16 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
+    env:
+      ENABLED_DETEKT: false
+
+
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      # Displays a message only for demo
+      - name: "Display message"
+        run: echo "Hola mundo!"
+
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
@@ -31,14 +39,18 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
-      # Run Detekt
-      - name: Run Detekt
-        run: ./gradlew detekt
-
-      # Run tests
-      - name: Run Unit Tests
-        run: ./gradlew test
-
-      # Copy docs to build output
-      - name: Copy Docs
-        run: ./gradlew copy
+      # Custom tasks
+      - name: "Custom tasks"
+        run: | # el pipe es necesario para multilinea
+          # unitTest
+          echo "Running unit tests..."
+          ./gradlew test
+          
+          # Detekt
+          if: ${{ secrets.ENABLED_DETEKT }}
+          echo "Running Detekt..."
+          ./gradlew detekt
+          
+          # Copy docs to build output
+          echo "Copying docs..."
+          run ./gradlew copy
