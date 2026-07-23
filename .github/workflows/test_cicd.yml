@@ -20,13 +20,14 @@ jobs:
 
     env:
       ENABLED_DETEKT: false
-
+      ENABLED_COPY_DOCS: false
+      ENABLED_TEST: true
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Displays a message only for demo
-      - name: "Display message"
-        run: echo "Hola mundo!"
+      - name: "Display variables"
+        run: echo "enabled_detekt=${{env.ENABLED_DETEKT}}, enabled_copy_docs=${{env.ENABLED_COPY_DOCS}}, enabled_test=${{env.ENABLED_TEST}}"
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
@@ -39,18 +40,20 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
-      # Custom tasks
-      - name: "Custom tasks"
+      - name: "Detekt run"
+        if: ${{ env.ENABLED_DETEKT == 'true' }}
         run: | # el pipe es necesario para multilinea
-          # unitTest
-          echo "Running unit tests..."
-          ./gradlew test
-          
-          # Detekt
-          if: ${{ secrets.ENABLED_DETEKT }}
           echo "Running Detekt..."
           ./gradlew detekt
-          
-          # Copy docs to build output
+
+      - name: "UnitTest run"
+        if: ${{ env.ENABLED_TEST == 'true' }}
+        run: | 
+          echo "Running unit tests..."
+          ./gradlew test    
+
+      - name: "Copy docs"
+        if: ${{ env.ENABLED_COPY_DOCS == 'true' }}
+        run: |
           echo "Copying docs..."
           run ./gradlew copy
