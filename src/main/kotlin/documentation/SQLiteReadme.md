@@ -23,7 +23,7 @@ La implementación se distribuye en las siguientes capas y directorios:
 *   **`src/main/kotlin/presentation/documentation`**:
     *   Este archivo `SQLiteReadme.md` y `TestingReadme.md`.
 *   **`src/main/kotlin/presentation/Main.kt`**:
-    *   Punto de entrada de la aplicación. Contiene la clase `AppRunner` que orquesta la inicialización de la base de datos, la carga de datos iniciales y la demostración de las operaciones CRUD para `User`, `Category` y `Product` a través de los casos de uso.
+    *   Punto de entrada de la aplicación. Contiene la función `main` que orquesta la inicialización de la base de datos, la carga de datos iniciales y la demostración de las operaciones CRUD para `User`, `Category` y `Product` a través de los casos de uso.
 *   **`src/main/resources/initial_data.sql`**:
     *   Archivo SQL que contiene sentencias `INSERT` para poblar la base de datos con datos de ejemplo para `User`, `Category` y `Product` al inicio, si la base de datos está vacía.
 *   **`src/main/resources/sql/`**:
@@ -44,7 +44,7 @@ La integración con SQLite se realiza a través del driver JDBC:
 *   **Operaciones CRUD para `Product`**: Implementación completa de Crear, Leer (todos y por ID), Actualizar y Eliminar productos, incluyendo su `Category` asociada. Las sentencias SQL se cargan desde `product.sql`.
 *   **Carga de Datos Iniciales**: La aplicación verifica si la base de datos está vacía y, si es así, ejecuta las sentencias SQL del archivo `src/main/resources/initial_data.sql` para precargar datos para usuarios, categorías y productos.
 *   **Arquitectura Limpia**: Separación clara de responsabilidades entre las capas de Dominio, Datos y Presentación, facilitando la mantenibilidad y la escalabilidad.
-*   **Inyección de Dependencias Manual**: Las dependencias (repositorios, casos de uso) se gestionan y se inyectan manualmente en la clase `AppRunner`, demostrando un control explícito sobre el flujo de dependencias.
+*   **Inyección de Dependencias Manual**: Las dependencias (repositorios, casos de uso) se gestionan y se inyectan manualmente en la función `main` de `Main.kt`, demostrando un control explícito sobre el flujo de dependencias.
 
 ## ✅ Estrategia de Testing
 
@@ -59,7 +59,7 @@ Para ver la implementación en acción:
 1.  **Sincronizar Proyecto Gradle**: Asegúrate de que tu IDE (Android Studio/IntelliJ IDEA) haya sincronizado el proyecto con los archivos Gradle para descargar las dependencias. Esto se hace automáticamente o manualmente desde `File > Sync Project with Gradle Files`.
 2.  **Ejecutar `Main.kt`**:
     *   Abre el archivo `src/main/kotlin/presentation/Main.kt`.
-    *   Haz clic en el icono de "play" (triángulo verde) junto a la función `main` o la clase `AppRunner` y selecciona "Run 'AppRunnerKt'".
+    *   Haz clic en el icono de "play" (triángulo verde) junto a la función `main` y selecciona "Run 'MainKt'".
 
 Al ejecutar, verás la salida en la consola que muestra la inicialización de la base de datos, la carga de datos iniciales (si aplica) y las operaciones CRUD de demostración para `User`, `Category` y `Product`. Se creará un archivo `my_clean_architecture_database.db` en la raíz de tu proyecto.
 
