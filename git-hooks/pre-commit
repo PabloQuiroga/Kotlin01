@@ -1,0 +1,26 @@
+#!/bin/sh
+
+echo "Running pre-commit hooks..."
+
+# Ejecutar Detekt
+echo "Running Detekt..."
+./gradlew detekt
+DETEKT_STATUS=$?
+
+if [ $DETEKT_STATUS -ne 0 ]; then
+  echo "Detekt found issues. Aborting commit."
+  exit 1
+fi
+
+# Ejecutar pruebas unitarias
+echo "Running unit tests..."
+./gradlew test
+TEST_STATUS=$?
+
+if [ $TEST_STATUS -ne 0 ]; then
+  echo "Unit tests failed. Aborting commit."
+  exit 1
+fi
+
+echo "Pre-commit hooks passed successfully."
+exit 0

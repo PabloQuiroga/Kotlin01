@@ -52,3 +52,15 @@ detekt {
     config.setFrom("$projectDir/config/detekt/detekt.yml")
     baseline = file("$projectDir/config/detekt/baseline.xml")
 }
+
+tasks.register("printMessage"){
+    group = "myGroup"
+    description = "Print simple message"
+    doLast{
+        println("Execute task....")
+    }
+}
+
+tasks.named("detekt"){
+    dependsOn("printMessage")
+}
