@@ -12,7 +12,7 @@ sqlite-jdbc = { group = "org.xerial", name = "sqlite-jdbc", version.ref = "sqlit
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" } # Añadido: Koin Core
 koin-test = { group = "io.insert-koin", name = "koin-test", version.ref = "koin" } # Añadido: Koin Test
-junit = { group = "junit", name = "junit", version.ref = "junit" }
+#junit = { group = "junit", name = "junit", version.ref = "junit" }
 
 [plugins]
 jacoco = { id = "org.gradle.jacoco" }
