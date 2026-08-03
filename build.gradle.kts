@@ -17,7 +17,6 @@ dependencies {
     testImplementation(kotlin("test"))
     implementation(libs.sqlite.jdbc)
     testImplementation(libs.mockk)
-    //testImplementation(libs.junit)
 
     implementation(libs.koin.core)
     testImplementation(libs.koin.test)
