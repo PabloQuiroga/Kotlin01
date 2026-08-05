@@ -38,9 +38,9 @@ El proyecto sigue una estructura de Arquitectura Limpia, organizada en capas:
 
 ## 📚 Documentación Detallada
 Para una comprensión más profunda de aspectos específicos del proyecto:
-- **Implementacion de Aspectos Basicos**: Consulta [`src/main/kotlin/presentation/documentation/BasicsReadme.md`](src/main/kotlin/presentation/documentation/BasicsReadme.md)
-- **Implementación de SQLite y Arquitectura Limpia**: Consulta [`src/main/kotlin/presentation/documentation/SQLiteReadme.md`](src/main/kotlin/presentation/documentation/SQLiteReadme.md)
-- **Estrategia de Testing**: Consulta [`src/main/kotlin/presentation/documentation/TestingReadme.md`](src/main/kotlin/presentation/documentation/TestingReadme.md)
+- **Implementacion de Aspectos Basicos**: Consulta [`src/main/kotlin/documentation/BasicsReadme.md`](src/main/kotlin/presentation/documentation/BasicsReadme.md)
+- **Implementación de SQLite y Arquitectura Limpia**: Consulta [`src/main/kotlin/documentation/SQLiteReadme.md`](src/main/kotlin/presentation/documentation/SQLiteReadme.md)
+- **Estrategia de Testing**: Consulta [`src/main/kotlin/documentation/TestingReadme.md`](src/main/kotlin/presentation/documentation/TestingReadme.md)
 
 ---
 Creado para practicar y mejorar el dominio del ecosistema Kotlin.
