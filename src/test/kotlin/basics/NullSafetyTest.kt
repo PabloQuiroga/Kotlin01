@@ -1,33 +1,46 @@
-package presentation.basics
+package basics
+
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 
 /**
- * Módulo 1: Fundamentos, Val vs Var y Null Safety
+ * Fundamentos, Val vs Var y Null Safety
  */
-@Suppress("ClassNaming")
-class Module_1_NullSafety {
+class NullSafetyTest {
 
-    @Suppress("FunctionNaming")
-    fun var_val(){
+    @Test
+    fun `test var`() {
         // var: Mutable.
         var score = 10
         score = 15
+        assertEquals(15, score)
+    }
 
+    @Disabled("Error de compilación")
+    @Test
+    fun test_val() {
         // val: Inmutable (read-only). Preferible para arquitectura robusta.
         val age = 30
         //age = 31 // Error de compilación
     }
 
-    @Suppress("FunctionNaming")
-    fun string_templates(name: String, price: Double){
-        val greeting = "Hola, $name!" // Incorpora variable en la cadena
-        println(greeting)
-
+    @Test
+    fun test_stringTemplates() {
+        val name = "pablo"
+        val price = 12.34
         val tax = 2.1
-        println("El precio total es ${price + tax} pesos.") // Expresiones dentro de la cadena
+
+        val greeting = "Hello, $name!" // Incorpora variable en la cadena
+        val precioTotal = price + tax
+
+        assertEquals("Hello, $name!", greeting)
+        assertEquals("${price + tax}", precioTotal.toString()) // Expresiones dentro de la cadena
     }
 
-    @Suppress("FunctionNaming")
-    fun null_safety(){
+    @Test
+    fun `test null safety basics`(){
         // 1. Tipos no nulos por defecto
         var name: String = "Kotlin"
         // name = null // Esto ni siquiera compilaría.
@@ -38,16 +51,18 @@ class Module_1_NullSafety {
 
         // 3. El operador Safe Call (?.)
         val length = nullableName?.length
+        assertNull(length)
 
         // 4. El operador Elvis (?:) - Valor por defecto
         val finalLength = nullableName?.length ?: 0
+        assertEquals(0, finalLength)
 
         // 5. El operador Double Bang (!!) - "Yo sé lo que hago" (Peligroso)
         // val forcedLength = nullableName!!.length // Lanzaría NullPointerException
     }
 
-    @Suppress("FunctionNaming")
-    fun safety_cast(){
+    @Test
+    fun `test safety cast`(){
         // 6. El operador Safe Cast (as?)
         // Intenta castear a un tipo, devolviendo null si falla en lugar de lanzar una ClassCastException.
 
