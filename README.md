@@ -3,16 +3,16 @@
 Este proyecto tiene como objetivo servir de laboratorio personal para practicar, documentar y asentar las bases de las características fundamentales de **Kotlin**, aplicando principios de **Arquitectura Limpia** y una **estrategia de testing robusta**.
 
 ## 🚀 Objetivos del Proyecto
-- [x] **Sintaxis Básica**: Variables, tipos de datos, control de flujo.
-- [x] **Funciones**: Funciones de orden superior, lambdas, extensiones.
-- [x] **Programación Orientada a Objetos**: Clases, herencia, interfaces, data classes, sealed classes.
-- [x] **Colecciones y Genéricos**: Listas, mapas, sets y el uso de tipos genéricos.
-- [x] **Null Safety**: Manejo de nulos, operador elvis, safe calls.
-- [ ] **Corrutinas**: Programación asíncrona y concurrencia.
-- [x] **Ecosistema**: Uso de Gradle (Kotlin DSL) y Version Catalogs.
-- [x] **Persistencia de Datos**: Implementación de una base de datos SQLite con Arquitectura Limpia.
-- [x] **Testing**: Cobertura de tests unitarios y de integración para las capas de Dominio y Datos.
-- [x] **Inyección de Dependencias**: Gestión de dependencias con Koin.
+- **Sintaxis Básica**: Variables, tipos de datos, control de flujo.
+- **Funciones**: Funciones de orden superior, lambdas, extensiones.
+- **Programación Orientada a Objetos**: Clases, herencia, interfaces, data classes, sealed classes.
+- **Colecciones y Genéricos**: Listas, mapas, sets y el uso de tipos genéricos.
+- **Null Safety**: Manejo de nulos, operador elvis, safe calls.
+- **Corrutinas**: Programación asíncrona y concurrencia.
+- **Ecosistema**: Uso de Gradle (Kotlin DSL) y Version Catalogs.
+- **Persistencia de Datos**: Implementación de una base de datos SQLite con Arquitectura Limpia.
+- **Testing**: Cobertura de tests unitarios y de integración para las capas de Dominio y Datos.
+- **Inyección de Dependencias**: Gestión de dependencias con Koin.
 
 ## 🛠️ Tecnologías
 - **Lenguaje:** [Kotlin](https://kotlinlang.org/)
@@ -38,6 +38,7 @@ El proyecto sigue una estructura de Arquitectura Limpia, organizada en capas:
 
 ## 📚 Documentación Detallada
 Para una comprensión más profunda de aspectos específicos del proyecto:
+- **Implementacion de Aspectos Basicos**: Consulta [`src/main/kotlin/presentation/documentation/BasicsReadme.md`](src/main/kotlin/presentation/documentation/BasicsReadme.md)
 - **Implementación de SQLite y Arquitectura Limpia**: Consulta [`src/main/kotlin/presentation/documentation/SQLiteReadme.md`](src/main/kotlin/presentation/documentation/SQLiteReadme.md)
 - **Estrategia de Testing**: Consulta [`src/main/kotlin/presentation/documentation/TestingReadme.md`](src/main/kotlin/presentation/documentation/TestingReadme.md)
 
