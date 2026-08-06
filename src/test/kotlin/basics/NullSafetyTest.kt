@@ -22,6 +22,7 @@ class NullSafetyTest {
     @Test
     fun test_val() {
         // val: Inmutable (read-only). Preferible para arquitectura robusta.
+        @Suppress("UnusedPrivateProperty")
         val age = 30
         //age = 31 // Error de compilación
     }

@@ -4,7 +4,6 @@ import java.nio.file.Files
 import java.nio.file.Path
 
 class ReadmeTest {
-    private val readme = Files.readString(Path.of("README.md"))
 
     @Test
     fun `README referencia documentación existente`() {
