@@ -1,7 +1,6 @@
 package domain.usecase
 
-import domain.model.Category
-import domain.model.Product
+import domain.model.ProductFactory
 import domain.repository.ProductRepository
 import io.mockk.every
 import io.mockk.mockk
@@ -16,7 +15,7 @@ class ProductUseCasesTest {
     private lateinit var productUseCases: ProductUseCases
 
     // Sample Category for products
-    private val sampleCategory = Category(id = 1, name = "Electronics", description = "Electronic devices")
+    //private val sampleCategory = Category(id = 1, name = "Electronics", description = "Electronic devices")
 
     @BeforeEach
     fun setUp() {
@@ -27,10 +26,7 @@ class ProductUseCasesTest {
     @Test
     fun `getAllProducts should return a list of products from the repository`() {
         // Given
-        val expectedProducts = listOf(
-            Product(id = 1, name = "Laptop", price = 1200.0, category = sampleCategory),
-            Product(id = 2, name = "Mouse", price = 25.0, category = sampleCategory)
-        )
+        val expectedProducts = ProductFactory.createList(2)
         every { productRepository.getAllProducts() } returns expectedProducts
 
         // When
@@ -45,7 +41,7 @@ class ProductUseCasesTest {
     fun `getProductById should return a product from the repository when found`() {
         // Given
         val productId = 1L
-        val expectedProduct = Product(id = productId, name = "Laptop", price = 1200.0, category = sampleCategory)
+        val expectedProduct = ProductFactory.create(id = productId)
         every { productRepository.getProductById(productId) } returns expectedProduct
 
         // When
@@ -73,7 +69,7 @@ class ProductUseCasesTest {
     @Test
     fun `createProduct should add a product to the repository and return the added product`() {
         // Given
-        val productToCreate = Product(name = "Keyboard", price = 75.0, category = sampleCategory)
+        val productToCreate = ProductFactory.create()
         val expectedProduct = productToCreate.copy(id = 3) // Simulate ID being assigned by repository
         every { productRepository.addProduct(productToCreate) } returns expectedProduct
 
@@ -88,7 +84,7 @@ class ProductUseCasesTest {
     @Test
     fun `updateProduct should update a product in the repository and return the updated product`() {
         // Given
-        val productToUpdate = Product(id = 1, name = "Updated Laptop", price = 1250.0, category = sampleCategory)
+        val productToUpdate = ProductFactory.create()
         every { productRepository.updateProduct(productToUpdate) } returns productToUpdate
 
         // When
@@ -102,7 +98,7 @@ class ProductUseCasesTest {
     @Test
     fun `updateProduct should return null if the product does not exist in the repository`() {
         // Given
-        val productToUpdate = Product(id = 99, name = "NonExistent", price = 0.0, category = sampleCategory)
+        val productToUpdate = ProductFactory.create()
         every { productRepository.updateProduct(productToUpdate) } returns null
 
         // When
