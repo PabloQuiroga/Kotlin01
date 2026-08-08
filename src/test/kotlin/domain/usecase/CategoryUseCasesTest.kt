@@ -1,6 +1,6 @@
 package domain.usecase
 
-import domain.model.Category
+import domain.model.CategoryFactory
 import domain.repository.CategoryRepository
 import io.mockk.every
 import io.mockk.mockk
@@ -23,10 +23,7 @@ class CategoryUseCasesTest {
     @Test
     fun `getAllCategories should return a list of categories from the repository`() {
         // Given
-        val expectedCategories = listOf(
-            Category(id = 1, name = "Electronics", description = "Devices"),
-            Category(id = 2, name = "Books", description = "Literature")
-        )
+        val expectedCategories = CategoryFactory.createList(2)
         every { categoryRepository.getAllCategories() } returns expectedCategories
 
         // When
@@ -41,7 +38,7 @@ class CategoryUseCasesTest {
     fun `getCategoryById should return a category from the repository when found`() {
         // Given
         val categoryId = 1L
-        val expectedCategory = Category(id = categoryId, name = "Electronics", description = "Devices")
+        val expectedCategory = CategoryFactory.create(id = categoryId)
         every { categoryRepository.getCategoryById(categoryId) } returns expectedCategory
 
         // When
@@ -69,7 +66,7 @@ class CategoryUseCasesTest {
     @Test
     fun `createCategory should add a category to the repository and return the added category`() {
         // Given
-        val categoryToCreate = Category(name = "New Category", description = "Description for new category")
+        val categoryToCreate = CategoryFactory.create()
         val expectedCategory = categoryToCreate.copy(id = 3) // Simulate ID being assigned by repository
         every { categoryRepository.addCategory(categoryToCreate) } returns expectedCategory
 
@@ -84,7 +81,7 @@ class CategoryUseCasesTest {
     @Test
     fun `updateCategory should update a category in the repository and return the updated category`() {
         // Given
-        val categoryToUpdate = Category(id = 1, name = "Updated Electronics", description = "Updated Devices")
+        val categoryToUpdate = CategoryFactory.create()
         every { categoryRepository.updateCategory(categoryToUpdate) } returns categoryToUpdate
 
         // When
@@ -98,7 +95,7 @@ class CategoryUseCasesTest {
     @Test
     fun `updateCategory should return null if the category does not exist in the repository`() {
         // Given
-        val categoryToUpdate = Category(id = 99, name = "NonExistent", description = "None")
+        val categoryToUpdate = CategoryFactory.create()
         every { categoryRepository.updateCategory(categoryToUpdate) } returns null
 
         // When
