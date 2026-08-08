@@ -1,8 +1,6 @@
 package domain.usecase
 
-import domain.model.Address
-import domain.model.Geo
-import domain.model.User
+import domain.model.UserMock
 import domain.repository.UserRepository
 import io.mockk.every
 import io.mockk.mockk
@@ -25,28 +23,7 @@ class UserUseCasesTest {
     @Test
     fun `getAllUsers should return a list of users from the repository`() {
         // Given
-        val geo = Geo(id = 1, lat = "0.0", lng = "0.0")
-        val address = Address(id = 1, street = "Street", suite = "Suite", city = "City", zipcode = "12345", geo = geo)
-        val expectedUsers = listOf(
-            User(
-                id = 1,
-                name = "Alice",
-                username = "alice",
-                email = "a@a.com",
-                phone = "1",
-                website = "a.com",
-                address = address
-            ),
-            User(
-                id = 2,
-                name = "Bob",
-                username = "bob",
-                email = "b@b.com",
-                phone = "2",
-                website = "b.com",
-                address = address
-            )
-        )
+        val expectedUsers = UserMock.createList(2)
         every { userRepository.getAllUsers() } returns expectedUsers
 
         // When
@@ -61,17 +38,7 @@ class UserUseCasesTest {
     fun `getUserById should return a user from the repository when found`() {
         // Given
         val userId = 1L
-        val geo = Geo(id = 1, lat = "0.0", lng = "0.0")
-        val address = Address(id = 1, street = "Street", suite = "Suite", city = "City", zipcode = "12345", geo = geo)
-        val expectedUser = User(
-            id = userId,
-            name = "Alice",
-            username = "alice",
-            email = "a@a.com",
-            phone = "1",
-            website = "a.com",
-            address = address
-        )
+        val expectedUser = UserMock.create(id = userId)
         every { userRepository.getUserById(userId) } returns expectedUser
 
         // When
@@ -99,17 +66,14 @@ class UserUseCasesTest {
     @Test
     fun `createUser should add a user to the repository and return the added user`() {
         // Given
-        val geo = Geo(lat = "0.0", lng = "0.0")
-        val address = Address(street = "Street", suite = "Suite", city = "City", zipcode = "12345", geo = geo)
-        val userToCreate = User(
+        val userToCreate = UserMock.create(
             name = "Charlie",
             username = "charlie",
             email = "c@c.com",
             phone = "3",
-            website = "c.com",
-            address = address
+            website = "c.com"
         )
-        val expectedUser = userToCreate.copy(id = 3) // Simulate ID being assigned by repository
+        val expectedUser = UserMock.create(id = 3)
         every { userRepository.addUser(userToCreate) } returns expectedUser
 
         // When
@@ -123,17 +87,7 @@ class UserUseCasesTest {
     @Test
     fun `updateUser should update a user in the repository and return the updated user`() {
         // Given
-        val geo = Geo(id = 1, lat = "0.0", lng = "0.0")
-        val address = Address(id = 1, street = "Street", suite = "Suite", city = "City", zipcode = "12345", geo = geo)
-        val userToUpdate = User(
-            id = 1,
-            name = "Alice Updated",
-            username = "alice",
-            email = "a@a.com",
-            phone = "1",
-            website = "a.com",
-            address = address
-        )
+        val userToUpdate = UserMock.create()
         every { userRepository.updateUser(userToUpdate) } returns userToUpdate
 
         // When
@@ -147,17 +101,7 @@ class UserUseCasesTest {
     @Test
     fun `updateUser should return null if the user does not exist in the repository`() {
         // Given
-        val geo = Geo(id = 1, lat = "0.0", lng = "0.0")
-        val address = Address(id = 1, street = "Street", suite = "Suite", city = "City", zipcode = "12345", geo = geo)
-        val userToUpdate = User(
-            id = 99,
-            name = "NonExistent",
-            username = "none",
-            email = "n@n.com",
-            phone = "9",
-            website = "n.com",
-            address = address
-        )
+        val userToUpdate = UserMock.create()
         every { userRepository.updateUser(userToUpdate) } returns null
 
         // When
@@ -195,4 +139,5 @@ class UserUseCasesTest {
         assertEquals(false, result)
         verify(exactly = 1) { userRepository.deleteUser(userId) }
     }
+
 }
