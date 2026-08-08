@@ -1,6 +1,6 @@
 package domain.model
 
-object UserMock {
+object UserFactory {
     fun empty() = User(
         id = 0,
         name = "",
@@ -8,7 +8,7 @@ object UserMock {
         email = "",
         phone = "",
         website = "",
-        address = AddressMock.empty()
+        address = AddressFactory.empty()
     )
 
     @SuppressWarnings("LongParameterList")
@@ -19,7 +19,7 @@ object UserMock {
         email: String = "Sincere@april.biz",
         phone: String = "1-770-736-8031 x56442",
         website: String = "hildegard.org",
-        address: Address = AddressMock.create()
+        address: Address = AddressFactory.create()
     ) = User(
         id = id,
         name = name,

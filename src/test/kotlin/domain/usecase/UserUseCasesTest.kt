@@ -1,6 +1,6 @@
 package domain.usecase
 
-import domain.model.UserMock
+import domain.model.UserFactory
 import domain.repository.UserRepository
 import io.mockk.every
 import io.mockk.mockk
@@ -23,7 +23,7 @@ class UserUseCasesTest {
     @Test
     fun `getAllUsers should return a list of users from the repository`() {
         // Given
-        val expectedUsers = UserMock.createList(2)
+        val expectedUsers = UserFactory.createList(2)
         every { userRepository.getAllUsers() } returns expectedUsers
 
         // When
@@ -38,7 +38,7 @@ class UserUseCasesTest {
     fun `getUserById should return a user from the repository when found`() {
         // Given
         val userId = 1L
-        val expectedUser = UserMock.create(id = userId)
+        val expectedUser = UserFactory.create(id = userId)
         every { userRepository.getUserById(userId) } returns expectedUser
 
         // When
@@ -66,14 +66,14 @@ class UserUseCasesTest {
     @Test
     fun `createUser should add a user to the repository and return the added user`() {
         // Given
-        val userToCreate = UserMock.create(
+        val userToCreate = UserFactory.create(
             name = "Charlie",
             username = "charlie",
             email = "c@c.com",
             phone = "3",
             website = "c.com"
         )
-        val expectedUser = UserMock.create(id = 3)
+        val expectedUser = UserFactory.create(id = 3)
         every { userRepository.addUser(userToCreate) } returns expectedUser
 
         // When
@@ -87,7 +87,7 @@ class UserUseCasesTest {
     @Test
     fun `updateUser should update a user in the repository and return the updated user`() {
         // Given
-        val userToUpdate = UserMock.create()
+        val userToUpdate = UserFactory.create()
         every { userRepository.updateUser(userToUpdate) } returns userToUpdate
 
         // When
@@ -101,7 +101,7 @@ class UserUseCasesTest {
     @Test
     fun `updateUser should return null if the user does not exist in the repository`() {
         // Given
-        val userToUpdate = UserMock.create()
+        val userToUpdate = UserFactory.create()
         every { userRepository.updateUser(userToUpdate) } returns null
 
         // When

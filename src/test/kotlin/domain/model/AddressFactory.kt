@@ -1,13 +1,13 @@
 package domain.model
 
-object AddressMock {
+object AddressFactory {
     fun empty() = Address(
         id = 0,
         street = "",
         suite = "",
         city = "",
         zipcode = "",
-        geo = GeoMock.empty()
+        geo = GeoFactory.empty()
     )
 
     @SuppressWarnings("LongParameterList")
@@ -17,7 +17,7 @@ object AddressMock {
         suite: String = "Apt. 556",
         city: String = "Gwenborough",
         zipcode: String = "92998-3874",
-        geo: Geo = GeoMock.create()
+        geo: Geo = GeoFactory.create()
     ) = Address(
         id = id,
         street = street,

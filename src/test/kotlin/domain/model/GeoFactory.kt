@@ -1,6 +1,6 @@
 package domain.model
 
-object GeoMock {
+object GeoFactory {
     fun empty() = Geo(
         id = 0,
         lat = "",
